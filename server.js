@@ -16,21 +16,74 @@ function requestHandler(req, res)
     
     res.writeHead(200, {'Content-Type': 'text/html'});
     
-    if (query['cmd'] == 'add')
+    //Part 1
+    if(query['cmd'] == 'repeat')
+    {
+      
+      console.log("Handling a request");
+      console.log(query);
+      
+      for (var i = 0; i < query['word'].length; i++)
+      {
+          res.write("<pre>" + query['word'] + "</pre>")
+      }
+      res.end('');
+      
+    }
+    else if(query['cmd'] == 'dotted')
+    {
+      
+      console.log("Handling a request");
+      console.log(query);
+      
+      var totalLen = 30;
+      var currLen = (query['word1'].length + query['word2'].length);
+      
+      res.write('<pre>' + query['word1'])
+      for(var i = 0; i < (totalLen - currLen); i++)
+      {
+        res.write('.');
+      }
+      
+      res.end(query['word2'] + '</pre');
+      
+    }
+    else if (query['cmd'] == 'stats')
     {
       console.log("Handling a request");
       console.log(query);
       var sum = 0;
-      for (var i in query['num'])
+      var max = query['grades'][0];
+      var min = query['grades'][0];
+      var avg = 0;
+    
+      for (var i in query['grades'])
       {
-        sum = sum + parseInt(query['num'][i]);
+        sum = sum + parseInt(query['grades'][i]);
+        
+        if(query['grades'] > max)
+        {
+          max = query['grades'][i];
+        }
+        
+        if(query['grades'] < min)
+        {
+          min = query['grades'][i];
+        }
+
       }
       
-      res.write('<p>'+sum+'</p>');
+      avg = sum / query['grades'].length;
+      
+      var size = query['grades'].length;
+      
+      res.write('<pre>AVG: '+ avg + ' MIN: ' + min + ' MAX: ' + max + '</pre>');
       res.end('');
     }
     else
     {
+      console.log("CMD not found")
       res.end('');
     }
+
 }
